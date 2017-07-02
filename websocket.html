@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Websockets</title>
+  <meta charset="utf-8">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <style>
+  body {
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 300;
+    background-color: #CCCCCC;
+  }
+  h1, h2, .col-md-2.control-label {
+    color: white;
+  }
+  #submitBtn {
+    background: #4b99ad;
+    padding: 8px 15px 8px 15px;
+    border: 0;
+    color: white;
+    border-radius: 0px;
+  }
+  input.edit-form.form-control {
+    border-radius: 0px;
+  }
+  </style>
+</head>
+<body class="container" style="background-image: url('http://i.imgur.com/d47ZIU3.jpg');background-repeat:no-repeat;">
+    <div class="page-header">
+      <div class="row">
+        <div class="col-sm-6">
+          <h1>Task Manager</h1>
+        </div>
+        <div class="col-sm-6">
+            <form class="form-horizontal" id="addTasksForm">
+                <h2>Your username</h2>
+                <div class="form-group">
+                  <label class="col-md-2 control-label">Username</label>
+                  <div class="col-md-10">
+                    <input type="text" class="edit-form form-control" id="username" placeholder="Choose your username" />
+                  </div>
+                </div>
+                <h2>Add a task in the list</h2>
+                <div class="form-group">
+                  <label class="col-md-2 control-label">Task</label>
+                  <div class="col-md-10">
+                    <input type="text" class="edit-form form-control" id="newTask" placeholder="Short task description" />
+                    <span className="edit-form bar"></span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-md-10 col-md-offset-2">
+                    <input type="submit" class="btn btn-primary" value="Add task" id="submitBtn" />
+                  </div>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+<!-- A new list-group-item should be displayed every time a new task is added -->
+    <div class="col-md-12">
+      <div class="col-md-6">
+        <div class="list-group">
+          <div class="list-group-separator"></div>
+        </div>
+      </div>
+    </div>
+<!--  -->
+  </div>
+
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    $(function(){
+      let socket = io.connect();
+      let $newtask = $('#newTask');
+      let $username = $('#username');
+      let $tasksForm = $('#addTasksForm');
+      let $tasksList = $('.list-group');
+      let $listItem = $('.list-group-item');
+
+
+      $tasksForm.submit(function(e){
+        e.preventDefault();
+        console.log('Task', $newtask.val(), ' was added by ', $username.val());
+        socket.emit('send task', $newtask.val(), $username.val());
+        $newtask.val('');
+      });
+
+      socket.on('new task', function(data) {
+        $tasksList.append('<div class="row list-group-item"><div class="row-content"><h4 class="list-group-item-heading">'+ data.task + '</h4><h6>' + 'by '+ data.username +'</h6></div></div><div class="list-group-separator"></div>');
+      });
+    });
+  </script>
+
+</body>
+</html>

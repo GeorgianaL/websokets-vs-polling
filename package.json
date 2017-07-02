@@ -1,0 +1,21 @@
+{
+  "name": "tema3",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "browserify": "^14.1.0",
+    "socket.io": "^1.7.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-preset-es2015": "^6.24.0",
+    "css-loader": "^0.27.3",
+    "webpack": "^2.2.1"
+  }
+}
